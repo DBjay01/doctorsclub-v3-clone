@@ -378,3 +378,18 @@
 .animate-reveal {
   animation: reveal 0.5s ease forwards;
 } 
+
+.phone-input input {
+  background-color: white ;
+  color: black;
+}
+
+.PhoneInputInput {
+	/* The phone number input stretches to fill all empty space */
+	color: black;
+	background-color: white;
+	flex: 1;
+	/* The phone number input should shrink
+	   to make room for the extension input */
+	min-width: 0;
+}
