@@ -34,6 +34,8 @@ const allCoupons = [
     code: "AFADM24",
     link: "https://bitli.in/ogAv8eB",
     description: "Pharmeasy Get Flat 24% Off on Medicines Using Code: AFADM24",
+    imageUrl: "https://cms-contents.pharmeasy.in/offer/767c9b0154d-SAVE24_COMPRESSED.jpg?dim=128x128&q=75",
+    
   },
   {
     id: 2,
@@ -41,6 +43,7 @@ const allCoupons = [
     code: "AF20",
     link: "https://bitli.in/ogAv8eB",
     description: "Pharmeasy Flat 20% Off your 1st three Medicine Order over Rs 999",
+    imageUrl: "https://cms-contents.pharmeasy.in/offer/4561f9b5e92-save22a.jpg?dim=128x128&q=75",
   },
   {
     id: 3,
@@ -48,6 +51,7 @@ const allCoupons = [
     code: "CK25",
     link: "https://bitli.in/xbejYP5",
     description: "Get Flat 25% Off on Orders Above Rs 1399 (New Users Only)",
+    imageUrl: "https://cms-contents.pharmeasy.in/offer/4561f9b5e92-save22a.jpg?dim=128x128&q=75",
   },
   {
     id: 4,
@@ -55,12 +59,14 @@ const allCoupons = [
     code: "EK5",
     link: "https://bitli.in/ZtI2T63",
     description: "Get Flat 5% Off Code | Use Code: 'EK5'",
+    imageUrl: "https://cms-contents.pharmeasy.in/offer/4561f9b5e92-save22a.jpg?dim=128x128&q=75",
   },
   {
     id: 5,
     name: "The Ayurveda Company - Explore Ayurveda Products",
     link: "https://bitli.in/D6ts8mn",
     description: "Skincare and Lifestyle Products based on Ayurveda & Modern Science",
+    imageUrl: "https://cms-contents.pharmeasy.in/offer/4561f9b5e92-save22a.jpg?dim=128x128&q=75",
   },
   {
     id: 6,
@@ -68,6 +74,7 @@ const allCoupons = [
     code: "BEARDO20",
     link: "https://bitli.in/6K4JnCY",
     description: "Exclusive selection of hair, beard, moustache, skin & face products.",
+    imageUrl: "https://cms-contents.pharmeasy.in/offer/4561f9b5e92-save22a.jpg?dim=128x128&q=75",
   },
   {
     id: 7,
@@ -75,6 +82,7 @@ const allCoupons = [
     code: "CLOVIA300",
     link: "https://bitli.in/Wyeq2Sw",
     description: "Rs 300 Off on Orders above Rs 1299 | Use Code: CLOVIA300",
+    imageUrl: "https://cms-contents.pharmeasy.in/offer/4561f9b5e92-save22a.jpg?dim=128x128&q=75",
   },
   {
     id: 8,
@@ -82,6 +90,7 @@ const allCoupons = [
     code: "WOW15",    
     link: "https://bitli.in/mr1nCEw",
     description: "Get 15% Off sitewide | Use Code: WOW15",
+    imageUrl: "https://cms-contents.pharmeasy.in/offer/4561f9b5e92-save22a.jpg?dim=128x128&q=75",
   }, 
   {
     id: 9,
@@ -89,6 +98,7 @@ const allCoupons = [
     code: "ND10",
     link: "https://bitli.in/nuk1xDP",
     description: "Get Flat 10% Off on Select Products", 
+    imageUrl: "https://cms-contents.pharmeasy.in/offer/4561f9b5e92-save22a.jpg?dim=128x128&q=75",
   },
   {
     id: 10,
@@ -96,6 +106,7 @@ const allCoupons = [
     code: "FLAT500",
     link: "https://bitli.in/elNNfHp",
     description: "Shop for Rs 999 And get Flat Rs 500 Cashback",
+    imageUrl: "https://cms-contents.pharmeasy.in/offer/4561f9b5e92-save22a.jpg?dim=128x128&q=75",
   },
   {
     id: 11,
@@ -103,6 +114,7 @@ const allCoupons = [
     code: "TEATIME100",
     link: "https://bitli.in/d5XIQiw",
     description: "Get Flat Rs 100 off on orders above RS 799",
+    imageUrl: "https://cms-contents.pharmeasy.in/offer/4561f9b5e92-save22a.jpg?dim=128x128&q=75",
   },
 ];
 
@@ -721,26 +733,26 @@ export const getAllAppointmenttttsss = async (doctorId: string) => {
   }
 };
 
-export const cancelAppointment = async (appointmentId: string) => {
-  try {
-    // Update the appointment status to 'cancelled'  
-    const updatedAppointment = await databases.updateDocument(
-      DATABASE_ID!,
-      APPOINTMENT_COLLECTION_ID!,
-      appointmentId,
-      { status: "cancelled", cancellationReason: "Cancelled by user" } // Update the status and set a reason
-    );
+// export const cancelAppointment = async (appointmentId: string) => {
+//   try {
+//     // Update the appointment status to 'cancelled'  
+//     const updatedAppointment = await databases.updateDocument(
+//       DATABASE_ID!,
+//       APPOINTMENT_COLLECTION_ID!,
+//       appointmentId,
+//       { status: "cancelled", cancellationReason: "Cancelled by user" } // Update the status and set a reason
+//     );
 
-    // Send SMS notification (if required)
-    const smsMessage = `Your appointment scheduled for ${formatDateTime(updatedAppointment.schedule).dateTime} has been cancelled.`;
-    await sendSMSNotification(updatedAppointment.userId, smsMessage);
+//     // Send SMS notification (if required)
+//     const smsMessage = `Your appointment scheduled for ${formatDateTime(updatedAppointment.schedule).dateTime} has been cancelled.`;
+//     await sendSMSNotification(updatedAppointment.userId, smsMessage);
 
-    return updatedAppointment;
-  } catch (error) {
-    console.error("Error cancelling appointment:", error);
-    throw error;
-  }
-};
+//     return updatedAppointment;
+//   } catch (error) {
+//     console.error("Error cancelling appointment:", error);
+//     throw error;
+//   }
+// };
 
 export const updateAppointmentStatussss = async (appointmentId: string, updates: { status: string; cancellationReason?: string }) => {
   try {
@@ -887,3 +899,23 @@ export const getAppointmentsByUserIds = async (userId: string) => {
     throw error;
   }
 };
+
+
+export const cancelAppointment = async (appointmentId: string) => { 
+  try { 
+    // Update the appointment status to 'cancelled' 
+    const updatedAppointment = await databases.updateDocument( 
+      DATABASE_ID!, 
+      APPOINTMENT_COLLECTION_ID!, 
+      appointmentId, 
+      { status: "cancelled", cancellationReason: "Cancelled by user" } // Update the status and set a reason 
+    ); 
+
+    // Optionally, you can send an SMS notification or perform other actions here
+
+    return updatedAppointment; 
+  } catch (error) { 
+    console.error("Error cancelling appointment:", error); 
+    throw error; 
+  } 
+}; 

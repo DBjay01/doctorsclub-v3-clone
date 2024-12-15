@@ -21,6 +21,7 @@ import { Footer } from '@/components/footer'
 import { getPatientByUserId } from '@/lib/actions/patient.actions'
 import { motion } from 'framer-motion';
 import { FaCheckCircle } from 'react-icons/fa';
+import { cancelAppointment  } from '@/lib/actions/appointment.actions'; // Add this import
    
 interface Doctor {
   image: string
@@ -49,16 +50,19 @@ interface Appointment {
 }
 
 interface Coupon {
+  imageUrl: string;
   id: number
   partner: string
   code: string
   link: string
   description: string
   discount?: string
+  // imageUrl: string
 }
 
 const DoctorCard = ({ doctor, onBookAppointment }: { doctor: Doctor, onBookAppointment: (doctor: Doctor) => void }) => {
   const [isOpen, setIsOpen] = useState(false)
+
 
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
@@ -208,15 +212,16 @@ export default function DoctorDashboard() {
         setAppointments(appointmentsList)      
 
         const parsedCoupons = couponsString ? couponsString.split(';').map((couponStr, index) => {
-          const [id, partner, code, link, description] = couponStr.split('|')
+          const [id, partner, code, link, description, imageUrl] = couponStr.split('|'); // Ensure imageUrl is included
           return {
             id: parseInt(id, 10),
             partner: partner || 'Unknown Partner',
             code: code || 'No Code',
             link: link || '#',
-            description: description || 'No description available'
+            description: description || 'No description available',
+            imageUrl: imageUrl || '/public/assets/images/ajio.webp', // Ensure this is correctly assigned
           }
-        }) : []; 
+        }) : [];
         setCoupons(parsedCoupons);
       } catch (err: any) {
         setError('Failed to fetch data: ' + err.message)
@@ -272,6 +277,39 @@ export default function DoctorDashboard() {
         </div> 
     );
   }
+
+  
+  // const handleCancelAppointment = async (appointmentId: string) => {
+  //   try {
+  //     await deleteAppointment(appointmentId); // Call the delete function
+  //     setAppointments(prev => prev.filter(appointment => appointment.$id !== appointmentId)); // Update state to remove the cancelled appointment
+  //     alert("Appointment cancelled successfully.");
+  //   } catch (error) {
+  //     console.error("Failed to cancel appointment:", error);
+  //     alert("Error cancelling appointment.");
+  //   }
+  // };
+
+  const handleCancelAppointment = async (appointmentId: string) => {
+    try {
+      // Call the cancelAppointment function to update the status in the database
+      await cancelAppointment(appointmentId);
+  
+      // Update the local state to reflect the cancelled status
+      setAppointments(prev => 
+        prev.map(appointment => 
+          appointment.$id === appointmentId 
+            ? { ...appointment, status: "cancelled" } // Update the status to "cancelled"
+            : appointment // Keep the other appointments unchanged
+        )
+      );
+  
+      alert("Appointment cancelled successfully.");
+    } catch (error) {
+      console.error("Failed to cancel appointment:", error);
+      alert("Error cancelling appointment.");
+    }
+  };
 
   return (
     <div className="min-h-screen w-full relative bg-black text-white">
@@ -419,10 +457,16 @@ export default function DoctorDashboard() {
                             <CheckCircle2 className="mr-2" size={16} />
                             <p><strong>Status:</strong> <span className="inline-block ml-2 px-3 py-1 bg-green-900/50 text-green-400 rounded-full text-xs md:text-sm font-medium"> {appointment.status}</span> </p>
                           </div>
-                          <div className="flex items-center mb-2">
-                            <Tag className="mr-2" size={16} />
-                            <p><strong>Appointment ID:</strong> <span className=" ml-2 bg-gray-900/50 px-2 py-1 rounded text-sm md:text-sm break-all">{appointment.$id}</span></p> 
-                          </div>
+                          <div className="flex items-center justify-between mb-2">
+                            <div className='flex items-center '>
+                              <Tag className="mr-2" size={16} />
+                              <p><strong>Appointment ID:</strong> <span className=" ml-2 bg-gray-900/50 px-2 py-1 rounded text-sm md:text-sm break-all">{appointment.$id}</span></p> 
+                            </div>
+                            <button className='bg-blue-800 rounded-lg px-10 py-1'
+                            onClick={() => handleCancelAppointment(appointment.$id)} // Call the cancel function
+                            >Cancel</button>
+
+                          </div>                          
                         </CardContent>  
                       </Card>  
                     )    
@@ -437,11 +481,11 @@ export default function DoctorDashboard() {
               <ScrollArea className="h-[600px] w-full rounded-md border border-gray-700 p-4">
                 {coupons.length > 0 ? (
                   coupons.map((coupon) => (
-                    <Card key={coupon.id} className="mb-4 bg-gray-800 text-white">
-                      <CardHeader>
+                    <Card key={coupon.id} className="mb-4 bg-gray-800 text-white flex justify-between items-center">
+                      <CardHeader className="flex-1">
                         <CardTitle>{coupon.partner}</CardTitle>
                       </CardHeader>
-                      <CardContent>
+                      <CardContent className="flex-1">
                         <div className="flex items-center mb-2">
                           <Tag className="mr-2" size={16} />
                           <p><strong>Code:</strong> {coupon.code}</p>
@@ -451,6 +495,17 @@ export default function DoctorDashboard() {
                           <a href={coupon.link} target="_blank" rel="noopener noreferrer">Redeem</a>
                         </Button>
                       </CardContent>
+                      {/* Add the image on the right side */}
+                      <div className="flex-shrink-0">  
+                        <Image 
+                          src="/assets/icons/logo-doctorsclub.svg"
+                          width={82}  
+                          height={66}
+                          alt="DoctorsClub Logo"
+                          className="h-[76px] w-[82px] md:h-[92px] md:w-[102px] object-contain"
+                          priority 
+                        />
+                      </div>
                     </Card>
                   ))
                 ) : (
@@ -458,14 +513,11 @@ export default function DoctorDashboard() {
                 )}
               </ScrollArea>
             </TabsContent>
+            
           </Tabs>
         </div>
       </main> 
-  
-      
 
-         
-      
     </div>  
     <Footer /> 
   </div>

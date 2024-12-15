@@ -58,7 +58,7 @@ export const appointmentColumns: ColumnDef<any>[] = [
       const appointment = row.original;
       return (
         <div className="min-w-[115px]">    
-          <StatusBadge status={row.original.status} />    
+          <StatusBadge status={appointment.status} />    
         </div> 
       );   
     },     
