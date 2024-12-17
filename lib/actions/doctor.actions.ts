@@ -3,6 +3,7 @@
 import { ID, Query } from "node-appwrite";
 import { BUCKET_ID, DATABASE_ID, databases, DOCTOR_COLLECTION_ID, ENDPOINT, PROJECT_ID, storage } from "../appwrite.config";
 import { parseStringify } from "../utils";
+import axios from 'axios';
 
 interface createDoctorProfile {
   clinicName: string;
@@ -64,7 +65,64 @@ export const getDoctorById = async (doctorId: string) => {
     console.error("Error fetching doctor details:", error);
     throw error;
   }
-};   
+}; 
+
+export const updateDoctorProfilee = async (data: {
+  doctorId: string; // The ID of the doctor to update
+  clinicName: string;
+  clinicAddress: string;
+  clinicPhone: string;
+  doctorName: string;
+  specialty: string;
+}) => {
+  try {
+    // Update the doctor's profile in the database
+    
+    const updatedDoctor = await databases.updateDocument(
+      DATABASE_ID!, // Your Appwrite database ID
+      DOCTOR_COLLECTION_ID!, // The collection ID for doctors
+      data.doctorId, // The ID of the doctor document to update
+      {
+        clinicName: data.clinicName,
+        clinicAddress: data.clinicAddress,
+        clinicPhone: data.clinicPhone,
+        doctorName: data.doctorName,
+        specialty: data.specialty,
+      }
+    );
+
+    return updatedDoctor; // Return the updated doctor document
+  } catch (error) {
+    console.error("Error updating doctor profile:", error);
+    throw error; // Rethrow the error for handling in the calling function
+  }
+}; 
+// export const updateDoctorProfilee = async (data: {
+//   doctorId: string;
+//   clinicName: string;
+//   clinicAddress: string;
+//   clinicPhone: string;
+//   doctorName: string;
+//   specialty: string;
+// }) => {
+//   try {
+//     await databases.updateDocument(
+//       DATABASE_ID!,
+//       DOCTOR_COLLECTION_ID!,
+//       data.doctorId,
+//       {
+//         clinicName: data.clinicName,
+//         clinicAddress: data.clinicAddress,
+//         clinicPhone: data.clinicPhone,
+//         doctorName: data.doctorName,
+//         specialty: data.specialty,
+//       }
+//     );
+//   } catch (error) {
+//     console.error("Error updating doctor profile:", error);
+//     throw error;
+//   }
+// };
 
 export const getAllDoctors = async () => {
   try {

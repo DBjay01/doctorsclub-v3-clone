@@ -26,6 +26,25 @@
   }
 }
 
+/* For WebKit browsers (Chrome, Safari) */
+::-webkit-scrollbar {
+  width: 8px; /* Width of the scrollbar */
+}
+
+::-webkit-scrollbar-track {
+  background: transparent; /* Background of the scrollbar track */
+}
+
+::-webkit-scrollbar-thumb {
+  background: white; /* Color of the scrollbar thumb */
+  border-radius: 10px; /* Rounded corners for the scrollbar thumb */
+}
+
+/* For Firefox */
+.scrollable-form {
+  scrollbar-color: white transparent; /* Thumb color and track color */
+  scrollbar-width: thin; /* Make the scrollbar thinner */
+}
 @layer utilities {
   /* ===== UTILITIES */
   .sidebar {

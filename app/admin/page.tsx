@@ -16,7 +16,13 @@ import { BarChartWithLabel } from '@/components/charts/BarChartWithLabel';
 import { LineChartWithLabel } from '@/components/charts/LineChartWithLabel';
 import { PieChartWithLabel } from '@/components/charts/PieChartWithLabel';  
 import { IconSearch } from '@tabler/icons-react';   
+import { SquarePen } from 'lucide-react';
 import { getDoctorById, updateDoctorImage } from '@/lib/actions/doctor.actions';
+import EditProfileModal from "@/components/EditProfileModal"; // Import the modal component
+import { Button } from "@/components/ui/button"; // Import your button component
+
+
+
 
 type CloudinaryUploadResult = {
   info?: {
@@ -42,8 +48,12 @@ const Admin = () => {
   const [showAppointments, setShowAppointments] = useState(true);
   const [showManageProfile, setShowManageProfile] = useState(false);
   const [doctorImage, setDoctorImage] = useState<URL | null>(null);
+  const [showEditModal, setShowEditModal] = useState(false);
+  const [doctorData, setDoctorData] = useState(null);
 
   const doctorId = userId ?? '';
+
+  
 
   const fetchPatients = async () => {
     if (!userId) {
@@ -187,7 +197,16 @@ const Admin = () => {
               className="rounded-full" 
             /> 
           )}   
-          <CldUploadWidget
+          <Button onClick={() => setShowEditModal(true)}><SquarePen /></Button>
+            <EditProfileModal 
+              doctorId={userId || ""} // Provide a fallback to an empty string if userId is null
+              isOpen={showEditModal} 
+              onClose={() => setShowEditModal(false)} 
+            />
+
+          
+
+          {/* <CldUploadWidget
             uploadPreset="next_cloudinary_app"
             onSuccess={handleImageUpload}  
           >         
@@ -196,7 +215,7 @@ const Admin = () => {
                 Upload Image 
               </button>   
             )}
-          </CldUploadWidget>
+          </CldUploadWidget> */}
         </div>
       </header>
 
